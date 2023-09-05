@@ -12,7 +12,7 @@ pipeline {
         stage('Build and Test') {
             steps {
                 // Build the Spring Boot application
-                sh './mvnw clean package'
+                sh 'mvn clean package'
                 
                 // Run unit tests
                 sh 'mvn test'
