@@ -11,20 +11,25 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                // Build the Spring Boot application
-                sh 'mvn clean package'
-                
-                // Run unit tests
-                sh 'mvn test'
+                // Use the Maven Wrapper to build and test the Spring Boot application
+                dir('Spring_boot_begineer/ems-backend') {
+                    sh './mvnw clean package'
+                    sh './mvnw test'
+                }
             }
         }
 
-        stage('Deploy to Dev') {
-            steps {
-                // Deploy to the development environment
-                sh 'mvn spring-boot:run'
-            }
+        // Add more stages as needed for additional tasks (e.g., integration tests)
+    }
+
+    post {
+        success {
+            // Notify about successful build and tests
+            echo 'Build and tests were successful!'
+        }
+        failure {
+            // Notify or handle build or test failures
+            echo 'Build or tests failed!'
         }
     }
 }
-
