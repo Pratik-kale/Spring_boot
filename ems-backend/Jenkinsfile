@@ -1,20 +1,30 @@
 pipeline {
     agent any
 
+    environment {
+        // Define the Maven tool name (configure in Jenkins tool settings)
+        MAVEN_TOOL = 'Maven3.8.4'
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Check out the source code from GitHub
-                checkout scm
+                // Clone only the subdirectory of your GitHub repository
+                sh "git clone --depth 1 --branch main https://github.com/Pratik-kale/Spring_boot_begineer.git Spring_boot_begineer/ems-backend"
             }
         }
 
         stage('Build and Test') {
             steps {
-                // Use the Maven Wrapper to build and test the Spring Boot application
+                // Change the working directory to your project's directory
                 dir('Spring_boot_begineer/ems-backend') {
-                    sh './mvnw clean package'
-                    sh './mvnw test'
+                    // Use the configured Maven tool
+                    script {
+                        def mvnHome = tool name: MAVEN_TOOL, type: 'hudson.tasks.Maven$MavenInstallation'
+                        // Build and test the Spring Boot application
+                        sh "${mvnHome}/bin/mvn clean package"
+                        sh "${mvnHome}/bin/mvn test"
+                    }
                 }
             }
         }
